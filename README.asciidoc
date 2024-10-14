@@ -1,0 +1,47 @@
+= gitfs
+:url-fuse: https://en.wikipedia.org/wiki/Filesystem_in_Userspace
+
+image:https://img.shields.io/badge/License-Apache%202.0-blue.svg[link="http://www.apache.org/licenses/LICENSE-2.0"]
+
+Gitfs is a {url-fuse}[FUSE] filesystem that serves the contents of a local Git repository.
+
+== Building
+:url-bazel: https://bazel.build/
+:url-cargo: https://doc.rust-lang.org/cargo/
+
+Gitfs can be built with either {url-bazel}[Bazel] or {url-cargo}[Cargo]. The recommended build tool is Bazel version 7.x or greater.
+
+[source,console]
+----
+$ bazel build -c opt //gitfs
+
+$ cargo build --release
+----
+
+Then mount a Git repository and browse its contents at any tag or commit.
+
+[source,console]
+----
+$ which fusermount3    # Make sure `fusermount3` is installed
+/usr/bin/fusermount3
+
+$ git clone git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git linux.git
+$ mkdir linux
+$ bazel-bin/gitfs/gitfs linux.git linux &
+$ ls linux
+by-branch  by-commit  by-tag
+$ ls linux/by-tag | grep -v -- -rc | sort -V | tail -n 5
+v6.7
+v6.8
+v6.9
+v6.10
+v6.11
+$ readlink linux/by-tag/v6.11
+../by-commit/98f7e32f20d28ec452afb208f9cffc08448a2652
+$ ls linux/by-tag/v6.11
+arch     CREDITS        fs        ipc      lib          mm      samples   tools
+block    crypto         include   Kbuild   LICENSES     net     scripts   usr
+certs    Documentation  init      Kconfig  MAINTAINERS  README  security  virt
+COPYING  drivers        io_uring  kernel   Makefile     rust    sound
+$ umount linux
+----

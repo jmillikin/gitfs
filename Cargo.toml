@@ -1,0 +1,32 @@
+[package]
+name = "gitfs"
+version = "0.0.1"
+authors = ["John Millikin <john@john-millikin.com>"]
+edition = "2021"
+description = "A FUSE filesystem for Git repositories"
+repository = "https://github.com/jmillikin/gitfs"
+license = "Apache-2.0"
+
+include = [
+	"/LICENSE.txt",
+	"/gitfs/*.rs",
+]
+
+[dependencies]
+fuse      = { git = "https://github.com/jmillikin/rust-fuse", rev = "fb3b8c0960e77d3e025ff95ef58a078563a3d03f" }
+fuse-libc = { git = "https://github.com/jmillikin/rust-fuse", rev = "fb3b8c0960e77d3e025ff95ef58a078563a3d03f" }
+fuse-std  = { git = "https://github.com/jmillikin/rust-fuse", rev = "fb3b8c0960e77d3e025ff95ef58a078563a3d03f" }
+fuse-vfs  = { git = "https://github.com/jmillikin/rust-fuse", rev = "fb3b8c0960e77d3e025ff95ef58a078563a3d03f" }
+
+libc = { version = "= 0.2.149" }
+git2 = { version = "= 0.15.0", default-features = false }
+
+[[bin]]
+name = "gitfs"
+path = "gitfs/gitfs_main.rs"
+
+[target.'cfg(target_os = "freebsd")'.dependencies]
+freebsd-errno = { version = "1.0" }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+linux-errno = { version = "1.0" }

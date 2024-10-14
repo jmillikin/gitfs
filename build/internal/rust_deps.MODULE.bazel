@@ -1,0 +1,236 @@
+http_archive = use_repo_rule(
+    "@bazel_tools//tools/build_defs/repo:http.bzl",
+    "http_archive",
+)
+
+CRATES_IO_TAR_GZ = "https://crates.io/api/v1/crates/{}/{}/download"
+
+RUST_BUILD = """
+load("@rules_rust//rust:defs.bzl", "rust_library")
+
+rust_library(
+    name = "{name}",
+    srcs = {srcs},
+    deps = {deps},
+    edition = "{edition}",
+    {extra}
+    visibility = ["//visibility:public"],
+)
+"""
+
+RUST_DEPS = [
+    dict(
+        name = "com_github_bitflags_bitflags",
+        package_name = "bitflags",
+        version = "1.3.2",
+        sha256 = "bef38d45163c2f1dde094a7dfd33ccf595c92905c8f8f4fdc18d06fb1037718a",
+        build_file_content = RUST_BUILD.format(
+            name = "bitflags",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_Lokathor_tinyvec",
+        package_name = "tinyvec",
+        version = "1.6.0",
+        sha256 = "87cc5ceb3875bb20c2890005a4e226a4651264a5c75edb2421b52861a0a0cb50",
+        build_file_content = RUST_BUILD.format(
+            name = "tinyvec",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_Soveu_tinyvec_macros//:tinyvec_macros",
+            ],
+            edition = "2018",
+            extra = """
+            crate_features = ["alloc", "std", "tinyvec_macros", "rustc_1_40", "rustc_1_55", "rustc_1_57"],
+            """,
+        ),
+    ),
+    dict(
+        name = "com_github_rust-lang_git2-rs_git2",
+        package_name = "git2",
+        version = "0.15.0",
+        sha256 = "2994bee4a3a6a51eb90c218523be382fd7ea09b16380b9312e9dbe955ff7c7d1",
+        build_file_content = RUST_BUILD.format(
+            name = "git2",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_bitflags_bitflags//:bitflags",
+                "@com_github_rust-lang_git2-rs_libgit2-sys//:libgit2-sys",
+                "@com_github_rust-lang_libc//:libc",
+                "@com_github_rust-lang_log//:log",
+                "@com_github_servo_rust-url_url//:url",
+            ],
+            edition = "2018",
+            extra = """
+            rustc_flags = ["-Awarnings"],
+            """,
+        ),
+    ),
+    dict(
+        name = "com_github_rust-lang_git2-rs_libgit2-sys",
+        package_name = "libgit2-sys",
+        version = "0.14.0+1.5.0",
+        sha256 = "47a00859c70c8a4f7218e6d1cc32875c4b55f6799445b842b0d8ed5e4c3d959b",
+        build_file_content = RUST_BUILD.format(
+            name = "libgit2-sys",
+            srcs = ["lib.rs"],
+            deps = [
+                "@com_github_rust-lang_libc//:libc",
+                "@com_github_rust-lang_libz-sys//:libz-sys",
+                "@libgit2",
+            ],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_rust-lang_libz-sys",
+        package_name = "libz-sys",
+        version = "1.1.8",
+        sha256 = "9702761c3935f8cc2f101793272e202c72b99da8f4224a19ddcf1279a6450bbf",
+        build_file_content = RUST_BUILD.format(
+            name = "libz-sys",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = ["@zlib"],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_rust-lang_log",
+        package_name = "log",
+        version = "0.4.18",
+        sha256 = "518ef76f2f87365916b142844c16d8fefd85039bc5699050210a7778ee1cd1de",
+        build_file_content = RUST_BUILD.format(
+            name = "log",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [],
+            edition = "2015",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_servo_rust-url_form_urlencoded",
+        package_name = "form_urlencoded",
+        version = "1.1.0",
+        sha256 = "a9c384f161156f5260c24a097c56119f9be8c798586aecc13afbcbe7b7e26bf8",
+        build_file_content = RUST_BUILD.format(
+            name = "form_urlencoded",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_servo_rust-url_percent-encoding//:percent-encoding",
+            ],
+            edition = "2018",
+            extra = """
+            rustc_flags = ["-Awarnings"],
+            """,
+        ),
+    ),
+    dict(
+        name = "com_github_servo_rust-url_idna",
+        package_name = "idna",
+        version = "0.3.0",
+        sha256 = "e14ddfc70884202db2244c223200c204c2bda1bc6e0998d11b5e024d657209e6",
+        build_file_content = RUST_BUILD.format(
+            name = "idna",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_servo_unicode-bidi//:unicode-bidi",
+                "@com_github_unicode-rs_unicode-normalization//:unicode-normalization",
+            ],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_servo_rust-url_percent-encoding",
+        package_name = "percent-encoding",
+        version = "2.2.0",
+        sha256 = "478c572c3d73181ff3c2539045f6eb99e5491218eae919370993b890cdbdd98e",
+        build_file_content = RUST_BUILD.format(
+            name = "percent-encoding",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [],
+            edition = "2018",
+            extra = """
+            crate_features = ["alloc"],
+            rustc_flags = ["-Awarnings"],
+            """,
+        ),
+    ),
+    dict(
+        name = "com_github_servo_rust-url_url",
+        package_name = "url",
+        version = "2.3.1",
+        sha256 = "0d68c799ae75762b8c3fe375feb6600ef5602c883c5d21eb51c09f22b83c4643",
+        build_file_content = RUST_BUILD.format(
+            name = "url",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_servo_rust-url_form_urlencoded//:form_urlencoded",
+                "@com_github_servo_rust-url_idna//:idna",
+                "@com_github_servo_rust-url_percent-encoding//:percent-encoding",
+            ],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_servo_unicode-bidi",
+        package_name = "unicode-bidi",
+        version = "0.3.8",
+        sha256 = "099b7128301d285f79ddd55b9a83d5e6b9e97c92e0ea0daebee7263e932de992",
+        build_file_content = RUST_BUILD.format(
+            name = "unicode-bidi",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [],
+            edition = "2018",
+            extra = """
+            crate_features = ["std", "hardcoded-data"],
+            """,
+        ),
+    ),
+    dict(
+        name = "com_github_Soveu_tinyvec_macros",
+        package_name = "tinyvec_macros",
+        version = "0.1.0",
+        sha256 = "cda74da7e1a664f795bb1f8a87ec406fb89a02522cf6e50620d016add6dbbf5c",
+        build_file_content = RUST_BUILD.format(
+            name = "tinyvec_macros",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [],
+            edition = "2018",
+            extra = "",
+        ),
+    ),
+    dict(
+        name = "com_github_unicode-rs_unicode-normalization",
+        package_name = "unicode-normalization",
+        version = "0.1.21",
+        sha256 = "854cbdc4f7bc6ae19c820d44abdc3277ac3e1b2b93db20a636825d9322fb60e6",
+        build_file_content = RUST_BUILD.format(
+            name = "unicode-normalization",
+            srcs = "glob(['src/**/*.rs'])",
+            deps = [
+                "@com_github_Lokathor_tinyvec//:tinyvec",
+            ],
+            edition = "2018",
+            extra = """
+            crate_features = ["std"],
+            """,
+        ),
+    ),
+]
+
+[http_archive(
+    name = dep["name"],
+    build_file_content = dep["build_file_content"],
+    sha256 = dep["sha256"],
+    strip_prefix = "{}-{}".format(dep["package_name"], dep["version"]),
+    type = "tar.gz",
+    url = CRATES_IO_TAR_GZ.format(dep["package_name"], dep["version"]),
+) for dep in RUST_DEPS]

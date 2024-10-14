@@ -1,0 +1,5 @@
+module(
+    name = "com_github_jmillikin_rust-fuse",
+    version = "0.0.0-20241014-fb3b8c0",
+    compatibility_level = 1,
+)

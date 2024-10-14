@@ -1,0 +1,32 @@
+module(
+    name = "gitfs",
+)
+
+bazel_dep(name = "bazel_skylib", version = "1.7.1")
+bazel_dep(name = "libgit2", version = "1.8.1")
+bazel_dep(name = "platforms", version = "0.0.10")
+bazel_dep(name = "rules_rust", version = "0.52.2")
+bazel_dep(name = "zlib", version = "1.3.1.bcr.3")
+
+bazel_dep(
+    name = "com_github_jmillikin_rust-fuse",
+    version = "0.0.0-20241014-fb3b8c0",
+)
+
+git_override(
+    module_name = "com_github_jmillikin_rust-fuse",
+    remote = "https://github.com/jmillikin/rust-fuse",
+    commit = "fb3b8c0960e77d3e025ff95ef58a078563a3d03f",
+)
+
+bazel_dep(
+    name = "com_github_rust-lang_libc",
+    version = "0.2.149",
+)
+
+rust = use_extension("@rules_rust//rust:extensions.bzl", "rust")
+rust.toolchain(
+    versions = ["1.81.0"],
+)
+
+include("//build/internal:rust_deps.MODULE.bazel")

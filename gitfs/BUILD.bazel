@@ -1,0 +1,18 @@
+load("@rules_rust//rust:defs.bzl", "rust_binary")
+
+rust_binary(
+    name = "gitfs",
+    srcs = [
+        "gitfs.rs",
+        "gitfs_main.rs",
+    ],
+    crate_root = "gitfs_main.rs",
+    deps = [
+        "@rust_fuse//fuse",
+        "@rust_fuse//fuse-libc",
+        "@rust_fuse//fuse-std",
+        "@rust_fuse//fuse-vfs",
+        "@rust_git2//:git2",
+        "@rust_libc//:libc",
+    ],
+)
